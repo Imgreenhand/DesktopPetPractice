@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Protocol, Sequence
 
-from memory_graph import MemoryGraph
+from .memory_graph import MemoryGraph
 
 
 class EmbeddingChangedError(ValueError):
