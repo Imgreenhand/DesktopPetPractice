@@ -4,5 +4,9 @@ openai>=1.0.0
 # 向量与相似度计算
 numpy>=1.24
 
+# 本地向量模型（真实语义检索用）：会连带安装 torch 等，约占 1 GB 磁盘，
+# 首次使用时还要下载模型权重（默认 BAAI/bge-small-zh-v1.5 约 92 MB）
+sentence-transformers>=3.0.0
+
 # 桌面宠物 UI（开发中）
 PySide6>=6.7.0

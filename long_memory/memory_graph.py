@@ -60,6 +60,7 @@ class MemoryGraph:
         self.edges: dict[str, dict[str, float]] = {}
         # {"mem_1": {"mem_2": 0.5}, ...} 无权图用相似度当边权
         self.num: int = 0               # 当前最大节点 id 序号，加载存档时恢复
+        self.meta: dict = {}            # 存档元信息，如建立这份记忆所用的向量模型与维度
         self._ids: list[str] = []       # 派生索引：节点顺序，与下面的矩阵行一一对应
         self._text_to_id: dict[str, str] = {}
         self._embeddings: np.ndarray | None = None
@@ -281,6 +282,7 @@ class MemoryGraph:
         return {
             "version": 1,
             "num": self.num,
+            "meta": dict(self.meta),
             "nodes": {nid: {k: v for k, v in node.__dict__.items() if k in known}
                       for nid, node in self.nodes.items()},
             "edges": {nid: dict(neighbors) for nid, neighbors in self.edges.items()},
@@ -288,7 +290,7 @@ class MemoryGraph:
 
     @classmethod
     def from_dict(cls, data: dict) -> "MemoryGraph":
-        """只恢复 nodes/edges，派生索引全部重建，num 取存档与现存 id 的较大值"""
+        """恢复 meta/nodes/edges，派生索引全部重建，num 取存档与现存 id 的较大值"""
         graph = cls()
         known = {f.name for f in fields(MemNode)}
         for nid, payload in data.get("nodes", {}).items():
@@ -296,6 +298,7 @@ class MemoryGraph:
         for nid, neighbors in data.get("edges", {}).items():
             graph.edges[nid] = {k: float(v) for k, v in neighbors.items()}
         graph.num = int(data.get("num", 0))
+        graph.meta = dict(data.get("meta") or {})   # 老存档没有这个字段，取空字典即可
         graph._reindex()
         return graph
 
