@@ -1,8 +1,10 @@
-# Arknights Desktop Pet（明日方舟桌宠）
+# DesktopPetPractice（桌宠练习）
 
-一个用 Python 编写的「AI 桌宠」实验项目：把大语言模型接到你的电脑里，让它能聊天、有性格，并且像人一样**用一张记忆网络来记住和联想**。
+一个用 Python 编写的「AI 桌宠」练习项目：把大语言模型接到你的电脑里，让它能聊天、有性格，并且像人一样**用一张记忆网络来记住和联想**。
 
-目前项目处于早期阶段，已实现的是「LLM 对话 + 长期记忆图」的核心骨架，桌面 UI（PySide6）部分仍在开发中。
+目前项目处于早期阶段，已实现的是「LLM 对话 + 长期记忆图 + 真实语义向量」的核心骨架，桌面 UI（PySide6）部分仍在开发中。
+
+形象完全可自定义：默认人设是 **DeepSeek 鲸鱼娘**，人设提示词就写在 `main.py` 的 `SYSTEM_PROMPT` 里，改几行字就能换成任何你喜欢的角色。
 
 ## 功能特性
 
@@ -11,12 +13,12 @@
 - **上下文窗口压缩**：对话轮数超过上限时自动把早期对话总结成摘要，只保留最近几轮原文，避免上下文爆炸。
 - **真实语义向量**：`EmbeddingProvider` 抽象基类定义向量接口，`LocalEmbeddingAdapter` 用 sentence-transformers 在本机离线跑向量模型（默认 `BAAI/bge-small-zh-v1.5`），记忆检索靠真正的语义相似度而不是关键词匹配；换模型只要换一个适配器，记忆逻辑完全不用动。
 - **长期记忆图**：基于「记忆节点 + 相似度边权」的图结构，配合 BFS 激活扩散、权重衰减和加权轮盘赌，实现类人的联想式回忆（算法说明见下文）。
-- **人设可切换**：系统提示词独立于对话逻辑，方便更换桌宠性格。
+- **人设可切换**：默认形象是 DeepSeek 鲸鱼娘，人设提示词独立于对话逻辑，改一段文字就能换成别的角色。
 
 ## 项目结构
 
 ```
-ArknightDesktopPet/
+DesktopPetPractice/
 ├── main.py                        # 程序入口：命令行对话循环 + 窗口压缩调度
 ├── ai_adapter/                    # 模型接入层：只定义接口，不绑定具体供应商
 │   ├── llm_provider.py            # LLMProvider 抽象基类 & UnifiedResponse 统一响应格式
@@ -38,8 +40,8 @@ ArknightDesktopPet/
 1. 克隆仓库并创建虚拟环境：
 
    ```bash
-   git clone https://github.com/Imgreenhand/ArknightsDesktopPets.git
-   cd ArknightsDesktopPets
+   git clone https://github.com/Imgreenhand/DesktopPetPractice.git
+   cd DesktopPetPractice
    python -m venv .venv
    ```
 
@@ -170,9 +172,10 @@ ArknightDesktopPet/
 - [x] 真实语义向量（本地 sentence-transformers，适配器可插拔）
 - [ ] 在线向量接口适配（OpenAI / 硅基流动 / 智谱 / Ollama）
 - [ ] 把长期记忆接进对话循环（检索 → 注入提示词 → 写回新记忆）
+- [ ] 人设配置文件与立绘资源（默认形象 DeepSeek 鲸鱼娘，可自定义）
 - [ ] 更多 LLM 供应商适配（Claude / Gemini / 本地模型）
 - [ ] 联网搜索与自主联想
 
 ## 说明
 
-本项目为个人学习与实验性质的作品，《明日方舟》相关名称与素材版权归其原作者及发行方所有。
+本项目为个人学习与实验性质的作品，与 DeepSeek 官方无关；「DeepSeek」等相关名称与素材的权利归其权利人所有，默认人设仅供个人学习练习使用。
